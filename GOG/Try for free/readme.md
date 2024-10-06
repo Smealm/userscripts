@@ -11,7 +11,21 @@ Steps taken to make this script
 3. under `var buttonSet = [` delete all URL entries except for `    { url: "https://gog-games.to/?search=",       title: "GOG Games" },`
 4. in the URL string replace `https://gog-games.to/?search=` with `https://gog-games.to/game/`
 5. in the TITLE string replace `GOG Games` with `Try for free!`
-6. hit save and enjoy!
+6. select line [45 and 53](https://files.catbox.moe/jf1h1z.png) and replace it with this code: 
+```
+switch(siteSetResult) {
+    case "GOG":
+        appName = document.getElementsByClassName("productcard-basics__title")[0].textContent;
+        appName = appName.trim()
+            .replace(/\s+/g, '_')           // Replace spaces with underscores
+            .replace(/[^a-zA-Z0-9_]/g, ''); // Remove everything that isn't a letter, number or underscore
+        buttonSet.forEach((el) => {
+            $("button.cart-button")[0].parentElement.parentElement.append(furnishGOG(el.url + appName, el.title));
+        });
+        break;
+}
+```
+7. hit save and enjoy!
 
 
 
