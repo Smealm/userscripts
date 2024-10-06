@@ -27,14 +27,18 @@ if (siteSetResult) {
     const requiredGameElement = document.querySelector(".content-summary-item__description .product-tile__title");
     const fallbackGameElement = document.querySelector(".productcard-basics__title");
 
-    // Try to get the game name from the primary element, then fallback if needed
     const requiredGameName = requiredGameElement ? requiredGameElement.textContent.trim() : fallbackGameElement ? fallbackGameElement.textContent.trim() : "";
-
-    // Sanitize game name: replace spaces with underscores and remove non-alphanumeric characters
     const gameNameForURL = requiredGameName.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
 
     const gameButton = furnishGOG(`${buttonSet[0].url}${gameNameForURL}`, buttonSet[0].title);
-    $("button.cart-button")[0]?.parentElement.parentElement.append(gameButton);
+
+    // Find the "Buy now" button
+    const buyNowButton = document.querySelector("button.button--big.buy-now-button");
+    if (buyNowButton) {
+        buyNowButton.parentElement.insertBefore(gameButton, buyNowButton.nextSibling); // Insert after the "Buy now" button
+    } else {
+        console.warn("Buy now button not found.");
+    }
 }
 
 function furnishGOG(href, innerHTML) {
