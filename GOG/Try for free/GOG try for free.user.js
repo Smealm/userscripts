@@ -24,20 +24,32 @@ const siteSet = [
 const siteSetResult = siteSet.find(el => document.URL.match(el.regex));
 
 if (siteSetResult) {
+    // First, check for the required game title
     const requiredGameElement = document.querySelector(".content-summary-item__description .product-tile__title");
     const fallbackGameElement = document.querySelector(".productcard-basics__title");
 
-    const requiredGameName = requiredGameElement ? requiredGameElement.textContent.trim() : fallbackGameElement ? fallbackGameElement.textContent.trim() : "";
-    const gameNameForURL = requiredGameName.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+    let gameNameForURL = requiredGameElement ? requiredGameElement.textContent.trim() : fallbackGameElement ? fallbackGameElement.textContent.trim() : "";
 
-    const gameButton = furnishGOG(`${buttonSet[0].url}${gameNameForURL}`, buttonSet[0].title);
+    // If no title was found, fall back to the URL
+    if (!gameNameForURL) {
+        gameNameForURL = document.URL.split("/game/")[1];
+    }
 
-    // Find the "Buy now" button
-    const buyNowButton = document.querySelector("button.button--big.buy-now-button");
-    if (buyNowButton) {
-        buyNowButton.parentElement.insertBefore(gameButton, buyNowButton.nextSibling); // Insert after the "Buy now" button
+    if (gameNameForURL) {
+        // Replace spaces with underscores for the required title
+        const formattedGameName = gameNameForURL.replace(/ /g, '_').replace(/[^a-zA-Z0-9_]/g, ''); // Keep underscores
+
+        const gameButton = furnishGOG(`${buttonSet[0].url}${formattedGameName}`, buttonSet[0].title);
+
+        // Find the "Buy now" button
+        const buyNowButton = document.querySelector("button.button--big.buy-now-button");
+        if (buyNowButton) {
+            buyNowButton.parentElement.insertBefore(gameButton, buyNowButton.nextSibling); // Insert after the "Buy now" button
+        } else {
+            console.warn("Buy now button not found.");
+        }
     } else {
-        console.warn("Buy now button not found.");
+        console.warn("Game name not found in both title and URL.");
     }
 }
 
