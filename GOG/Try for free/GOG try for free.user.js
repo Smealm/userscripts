@@ -1,20 +1,8 @@
-/* eslint-disable no-multi-spaces */
-
-// Button configurations
-const buttonSet = [
-    { url: "https://gog-games.to/game/", title: "Try for free!" },
-];
-
-// URL match patterns
-const siteSet = [
-    { regex: /https:\/\/www\.gog\.com\/(?:en\/)?game\/.*/, title: "GOG" },
-];
-
 // ==UserScript==
 // @name         GOG to Free Download Site
 // @namespace    AnimeIsMyWaifu
 // @author       AnimeIsMyWaifu
-// @version      0.5
+// @version      0.8
 // @description  Try games from GOG for free before purchasing them
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @match        https://www.gog.com/game/*
@@ -25,29 +13,35 @@ const siteSet = [
 // @updateURL https://raw.githubusercontent.com/Smealm/userscripts/refs/heads/main/GOG/Try%20for%20free/GOG%20try%20for%20free.user.js
 // ==/UserScript==
 
+const buttonSet = [
+    { url: "https://gog-games.to/game/", title: "Try for free!" },
+];
+
+const siteSet = [
+    { regex: /https:\/\/www\.gog\.com\/(?:en\/)?game\/.*/, title: "GOG" },
+];
+
 const siteSetResult = siteSet.find(el => document.URL.match(el.regex));
 
 if (siteSetResult) {
-    console.log("Games Links: ", siteSetResult.title);
-    
-    // Extract the required game name from the HTML structure
     const requiredGameElement = document.querySelector(".content-summary-item__description .product-tile__title");
-    const requiredGameName = requiredGameElement ? requiredGameElement.textContent.trim() : "Unknown Game";
-    
-    console.log("Required Game Name: ", requiredGameName); // Log the required game name
+    const fallbackGameElement = document.querySelector(".productcard-basics__title");
 
-    buttonSet.forEach((el) => {
-        const button = furnishGOG(`${el.url}${requiredGameName.replace(/\s+/g, '_')}`, el.title);
-        $("button.cart-button")[0]?.parentElement.parentElement.append(button);
-    });
+    // Try to get the game name from the primary element, then fallback if needed
+    const requiredGameName = requiredGameElement ? requiredGameElement.textContent.trim() : fallbackGameElement ? fallbackGameElement.textContent.trim() : "";
+
+    // Sanitize game name: replace spaces with underscores and remove non-alphanumeric characters
+    const gameNameForURL = requiredGameName.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+
+    const gameButton = furnishGOG(`${buttonSet[0].url}${gameNameForURL}`, buttonSet[0].title);
+    $("button.cart-button")[0]?.parentElement.parentElement.append(gameButton);
 }
 
 function furnishGOG(href, innerHTML) {
     const element = document.createElement("a");
     element.target = "_blank";
-    element.style = "margin: 5px 0; padding: 5px 10px;";
     element.classList.add("button", "button--big", "cart-button", "ng-scope");
     element.href = href;
-    element.innerHTML = innerHTML;
+    element.textContent = innerHTML; // Using textContent for better security
     return element;
 }
