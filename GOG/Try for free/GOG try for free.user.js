@@ -21,8 +21,8 @@ All Credit for this userscript goes to Kozinc and AnimeIsMyWaifu. I simply tweak
 // @match        https://www.gog.com/en/game/*
 // @grant        none
 // @license      MIT
-// @downloadURL https://update.greasyfork.org/scripts/481134/GOG%20to%20Free%20Download%20Site.user.js
-// @updateURL https://update.greasyfork.org/scripts/481134/GOG%20to%20Free%20Download%20Site.meta.js
+// @downloadURL https://raw.githubusercontent.com/Smealm/userscripts/refs/heads/main/GOG/Try%20for%20free/GOG%20try%20for%20free.user.js
+// @updateURL https://raw.githubusercontent.com/Smealm/userscripts/refs/heads/main/GOG/Try%20for%20free/GOG%20try%20for%20free.user.js
 // ==/UserScript==
 
 var siteSetResult = "";
@@ -36,10 +36,12 @@ var appName = "";
 switch(siteSetResult) {
     case "GOG":
         appName = document.getElementsByClassName("productcard-basics__title")[0].textContent;
-        appName = appName.trim();
+        appName = appName.trim()
+            .replace(/\s+/g, '_')           // Replace spaces with underscores
+            .replace(/[^a-zA-Z0-9_]/g, ''); // Remove everything that isn't a letter, number or underscore
         buttonSet.forEach((el) => {
-            $("button.cart-button")[0].parentElement.parentElement.append(furnishGOG(el.url+appName, el.title))
-        })
+            $("button.cart-button")[0].parentElement.parentElement.append(furnishGOG(el.url + appName, el.title));
+        });
         break;
 }
 
