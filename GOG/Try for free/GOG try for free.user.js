@@ -6,7 +6,6 @@
 // @description  Try games from GOG for free before purchasing them
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @match        https://*gog.com/*game/*
-// @match        https://*gog.com/*game/*
 // @grant        none
 // @license      MIT
 // @downloadURL https://raw.githubusercontent.com/Smealm/userscripts/refs/heads/main/GOG/Try%20for%20free/GOG%20try%20for%20free.user.js
@@ -24,11 +23,10 @@ const siteSet = [
 const siteSetResult = siteSet.find(el => document.URL.match(el.regex));
 
 if (siteSetResult) {
-    // First, check for the required game title
+    // Check for the required game title
     const requiredGameElement = document.querySelector(".content-summary-item__description .product-tile__title");
-    const fallbackGameElement = document.querySelector(".productcard-basics__title");
 
-    let gameNameForURL = requiredGameElement ? requiredGameElement.textContent.trim() : fallbackGameElement ? fallbackGameElement.textContent.trim() : "";
+    let gameNameForURL = requiredGameElement ? requiredGameElement.textContent.trim() : "";
 
     // If no title was found, fall back to the URL
     if (!gameNameForURL) {
@@ -49,7 +47,7 @@ if (siteSetResult) {
             console.warn("Buy now button not found.");
         }
     } else {
-        console.warn("Game name not found in both title and URL.");
+        console.warn("Game name not found in title or URL.");
     }
 }
 
