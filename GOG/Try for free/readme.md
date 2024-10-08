@@ -27,7 +27,7 @@ switch(siteSetResult) {
 ```
 7. hit save and enjoy!
 
-this manual is missing some stuff that my rewritten version has but it gets the job done i guess. if you want the latest version download my version from this repo
+this manual version is missing some stuff that my rewritten version has but it gets the job done i guess. if you want the latest version download my version from this repo
 
 
 
