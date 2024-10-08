@@ -2,7 +2,7 @@
 // @name         GOG to Free Download Site
 // @namespace    Smealm
 // @author       Smealm
-// @version      1.0
+// @version      1.1
 // @description  Try games from GOG for free before purchasing them
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @match        https://*gog.com/*game/*
@@ -52,7 +52,7 @@
             const href = editionPickerLink.getAttribute("href"); 
             
             // Clean the href by removing the base URL and any language parts
-            const cleanedHref = href.replace(/https:\/\/www\.gog\.com\/|\/game\/|\/en/g, ""); 
+            const cleanedHref = href.replace(/https:\/\/www\.gog\.com\/|\/game\/|\/(en|de|fr|pl|ru|zh)/g, ""); 
             
             // Construct the final URL by combining the base button URL with the cleaned href
             finalUrl = buttonSet[0].url + cleanedHref; 
@@ -70,7 +70,7 @@
         // If we still have no final URL
         if (!finalUrl) {
             // Clean the current page URL by removing the GOG base URL and language parts
-            const currentPageUrl = window.location.href.replace(/https:\/\/www\.gog\.com\/|\/en/g, ""); 
+            const currentPageUrl = window.location.href.replace(/https:\/\/www\.gog\.com\/|\/(en|de|fr|pl|ru|zh)/g, ""); 
             
             // Set the final URL to the cleaned current page URL
             finalUrl = currentPageUrl; 
