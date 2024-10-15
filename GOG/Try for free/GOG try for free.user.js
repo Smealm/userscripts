@@ -17,7 +17,7 @@
 
     // This array holds the configuration for the button we will create
     const buttonSet = [
-        { url: "https://gog-games.to/game/", title: "Try for free!" }, // Base URL and button text
+        { url: "https://gog-games.to/game/", title: "Try for free" }, // Base URL and button text
     ];
 
     // Check if the current page is a GOG game page
