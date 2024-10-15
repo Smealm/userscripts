@@ -68,8 +68,10 @@
 
         // If we still don't have a final URL
         if (!finalUrl) {
-            // Format the game name by replacing spaces with underscores and removing invalid characters
-            const formattedGameName = gameNameForURL ? gameNameForURL.replace(/_/g, '-').replace(/[^a-zA-Z0-9-_]/g, '') : "";
+            // Format the game name by replacing spaces and dashes with underscores, and removing invalid characters
+            const formattedGameName = gameNameForURL 
+                ? gameNameForURL.replace(/\s+/g, '_').replace(/[-]/g, '_').replace(/[^a-zA-Z0-9_]/g, '') 
+                : "";
 
             // Construct the final URL using the formatted game name
             finalUrl = `${buttonSet[0].url}${formattedGameName}`;
