@@ -2,7 +2,7 @@
 // @name         GOG to Free Download Site
 // @namespace    Smealm
 // @author       Smealm
-// @version      1.2
+// @version      1.4
 // @description  Try games from GOG for free before purchasing them
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @match        https://*gog.com/*game/*
@@ -20,26 +20,24 @@
         { url: "https://gog-games.to/game/", title: "Try for free!" }, // Base URL and button text
     ];
 
-    // This array defines the patterns to match GOG game pages
-    const siteSet = [
-        { url: "https://*gog.com/*game/*", title: "GOG" }, // Pattern to identify GOG game URLs
-    ];
+    // Check if the current page is a GOG game page
+    if (document.URL.match(/https:\/\/.*gog\.com\/.*game\//)) {
+        // Initialize variables
+        let gameNameForURL = "";
+        let gameHref = "";
 
-    // Check if the current page's URL matches any of the defined patterns
-    const siteSetResult = siteSet.find(el => document.URL.match(el.regex));
+        // Look for the content-summary section with requiredGames
+        const requiredGamesSection = document.querySelector('[content-summary-section-id="requiredGames"]');
 
-    // If the current page is identified as a GOG game page
-    if (siteSetResult) {
-        // Find the product tile link element
-        const requiredGameElement = document.querySelector("a.product-tile__content.js-content");
-
-        // Get the game title text; if not found, initialize as an empty string
-        let gameNameForURL = requiredGameElement ?
-            requiredGameElement.querySelector(".product-tile__title").textContent.trim() : "";
-
-        // Get the href attribute for the game URL
-        let gameHref = requiredGameElement ?
-            requiredGameElement.getAttribute("href") : "";
+        // If the section is found
+        if (requiredGamesSection) {
+            const productTile = requiredGamesSection.querySelector(".product-tile__content.js-content");
+            if (productTile) {
+                // Get the game title from the product tile href
+                gameNameForURL = productTile.getAttribute("href").split("/game/")[1]; // Extract from href
+                gameHref = productTile.getAttribute("href");
+            }
+        }
 
         // If the title is still empty, extract it from the URL
         if (!gameNameForURL) {
@@ -71,7 +69,7 @@
         // If we still don't have a final URL
         if (!finalUrl) {
             // Format the game name by replacing spaces with underscores and removing invalid characters
-            const formattedGameName = gameNameForURL ? gameNameForURL.replace(/ /g, '_').replace(/[^a-zA-Z0-9_]/g, '') : "";
+            const formattedGameName = gameNameForURL ? gameNameForURL.replace(/_/g, '-').replace(/[^a-zA-Z0-9-_]/g, '') : "";
 
             // Construct the final URL using the formatted game name
             finalUrl = `${buttonSet[0].url}${formattedGameName}`;
