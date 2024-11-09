@@ -4,8 +4,7 @@
 // @author       Smealm
 // @version      1.4
 // @description  Try games from GOG for free before purchasing them
-// @require      https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
-// @match        https://*gog.com/*game/*
+// @match https://www.gog.com/*/game*
 // @grant        none
 // @license      MIT
 // @downloadURL https://raw.githubusercontent.com/Smealm/userscripts/refs/heads/main/GOG/Try%20for%20free/GOG%20try%20for%20free.user.js
