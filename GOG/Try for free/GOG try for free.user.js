@@ -170,17 +170,48 @@ try {
                             // Fetch the product ID from the product link in the HTML
                             let fetchedProductID = GOGProductID;
 
-                            // Find the td with class "col-name prod-unlisted" and query the product link inside it
-                            const prodUnlistedCell = doc.querySelector('td.col-name.prod-unlisted');
-                            if (prodUnlistedCell) {
-                                const productLink = prodUnlistedCell.querySelector('a[href^="/product/"]');
-                                if (productLink) {
-                                    fetchedProductID = productLink.getAttribute('href').replace('/product/', '').split('?')[0];
-                                    console.log('Fetched product ID:', fetchedProductID);
-                                } else {
-                                    console.log('Product link not found within prod-unlisted cell.');
-                                }
-                            }
+// Search the entire document for the exact <h2>Included games</h2> tag
+const heading = Array.from(doc.querySelectorAll('h2')).find(
+    el => el.textContent.trim() === 'Included games'
+);
+
+if (heading) {
+    // Get the next sibling element
+    let nextSibling = heading.nextElementSibling;
+
+    // Traverse siblings until a <table> is found or no siblings remain
+    while (nextSibling && nextSibling.tagName !== 'TABLE') {
+        nextSibling = nextSibling.nextElementSibling;
+    }
+
+    // If a valid <table> is found
+    if (nextSibling) {
+        const table = nextSibling;
+
+        // Search for the td with class "col-name prod-unlisted" inside this table
+        const prodUnlistedCell = table.querySelector('td.col-name.prod-unlisted');
+        if (prodUnlistedCell) {
+            // Find the product link inside the td
+            const productLink = prodUnlistedCell.querySelector('a[href^="/product/"]');
+            if (productLink) {
+                // Extract the product ID
+                const newProductID = productLink.getAttribute('href').replace('/product/', '').split('?')[0];
+                console.log('Fetched product ID:', newProductID);
+
+                // Update fetchedProductID
+                fetchedProductID = newProductID;
+            } else {
+                console.log('Product link not found within prod-unlisted cell.');
+            }
+        } else {
+            console.log('No prod-unlisted cell found in the table.');
+        }
+    } else {
+        console.log('No valid table found after the heading.');
+    }
+} else {
+    console.log('<h2>Included games</h2> not found in the document.');
+}
 
                             console.log('Final product ID:', fetchedProductID);
 
