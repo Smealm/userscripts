@@ -1,5 +1,5 @@
 GOG Games site redirect button script or something.
-This userscript is a slightly tweaked version of AnimeIsMyWaifu's version
+This userscript is a forked version of AnimeIsMyWaifu's version
 
 
 Install the script from this github repo [by clicking here](https://raw.githubusercontent.com/Smealm/userscripts/refs/heads/main/GOG/Try%20for%20free/GOG%20try%20for%20free.user.js) or make it yourself below
