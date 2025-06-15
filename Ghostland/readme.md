@@ -1,0 +1,1 @@
+makes the update and base game cards clickable, click on them to be redirected to the download links for said items.
