@@ -3,7 +3,7 @@
 // @namespace    https://nx-content.ghostland.at/
 // @match        https://nx-content.ghostland.at/*
 // @grant        none
-// @version      2.1
+// @version      2.2
 // @author       You
 // @description  Makes the Base Game and update tabs on Ghostland redirect to download links for the relevant content
 // ==/UserScript==
@@ -34,11 +34,27 @@
     };
 
     const injectLinks = async () => {
-        const params = new URLSearchParams(location.search);
-        const titleId = params.get('game');
-        if (!titleId) return log('❌ No titleId in URL');
+        log('🔍 Looking for Base Game section');
 
-        log(`🔍 Looking up titleId: ${titleId}`);
+        let baseGameSection;
+        try {
+            await waitForElement('h4.text-orange-400');
+            const headers = Array.from(document.querySelectorAll('h4.text-orange-400'));
+            const baseHeader = headers.find(h => h.textContent.trim() === 'Base Game');
+            if (!baseHeader) throw new Error('Base Game header not found');
+
+            baseGameSection = baseHeader.closest('.space-y-3');
+            if (!baseGameSection) throw new Error('Base Game container not found');
+        } catch (err) {
+            return log('❌ Error finding Base Game section:', err);
+        }
+
+        const tidElement = baseGameSection.querySelector('p');
+        if (!tidElement) return log('❌ Could not find TID paragraph');
+        const tidMatch = tidElement.textContent.match(/TID:\s*([0-9A-Fa-f]{16})/);
+        if (!tidMatch) return log('❌ TID format not found');
+        const titleId = tidMatch[1];
+        log(`🆔 Extracted Title ID: ${titleId}`);
 
         let availableSection;
         try {
